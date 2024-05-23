@@ -1,27 +1,20 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class SpaceScreen implements Screen {
     MyGame game;
 
     OrthographicCamera camera;
-    TextureRegion shipTex;
     Color bgColor;
-
-    float MAX_SPEED = 500;
-    Vector2 shipPos;
-    Vector2 shipVel;
-    float STEERING_FACTOR = 5;
+    Spaceship spaceship;
+    Meteor meteor;
+    ParticleEffect flame;
 
     public SpaceScreen(MyGame game) {
         this.game = game;
@@ -29,9 +22,13 @@ public class SpaceScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bgColor = Color.valueOf("1C3D6E");
-        shipTex = new TextureRegion(new Texture(Gdx.files.internal("ship_L.png")));
-        shipPos = new Vector2();
-        shipVel = new Vector2();
+
+        spaceship = new Spaceship();
+        meteor = new Meteor();
+
+
+        flame = new ParticleEffect();
+        flame.load(Gdx.files.internal("flame.p"), Gdx.files.internal("."));
     }
 
     @Override
@@ -41,56 +38,21 @@ public class SpaceScreen implements Screen {
 
     @Override
     public void render(float v) {
+        spaceship.update();
+        camera.position.set(
+            spaceship.x() + spaceship.width() / 2f,
+            spaceship.y() + spaceship.height() / 2f,
+            0.0f
+        );
         camera.update();
-
-        Vector2 dir = new Vector2();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            dir.add(0, 1);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            dir.add(0, -1);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            dir.add(-1, 0);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            dir.add(1, 0);
-        }
-
-        dir.nor();
-
-        Vector2 desiredVelocity = new Vector2();
-        desiredVelocity.set(dir);
-        desiredVelocity.scl(MAX_SPEED);
-
-        Vector2 steeringVector = new Vector2();
-        steeringVector.set(desiredVelocity).sub(shipVel);
-        steeringVector.scl(Gdx.graphics.getDeltaTime());
-        steeringVector.scl(STEERING_FACTOR);
-        shipVel.add(steeringVector);
-
-        Vector2 shipVelDelta = new Vector2();
-        shipVelDelta.set(shipVel).scl(Gdx.graphics.getDeltaTime());
-
-        float rotationRad = MathUtils.atan2(shipVelDelta.y, shipVelDelta.x); // rad
-        shipPos.add(shipVelDelta);
 
         ScreenUtils.clear(bgColor);
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.batch.draw(
-            shipTex,
-            shipPos.x, shipPos.y,
-            shipTex.getRegionWidth() / 2.f, shipTex.getRegionHeight() / 2.f,
-            shipTex.getRegionWidth(), shipTex.getRegionHeight(),
-            1.0f, 1.0f,
-            MathUtils.radiansToDegrees * rotationRad
-        );
+        spaceship.draw(game.batch);
+        meteor.draw(game.batch);
+        flame.draw(game.batch, Gdx.graphics.getDeltaTime());
         game.batch.end();
     }
 
