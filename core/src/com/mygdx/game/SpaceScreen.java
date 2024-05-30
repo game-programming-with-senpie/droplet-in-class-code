@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class SpaceScreen implements Screen {
@@ -14,7 +13,7 @@ public class SpaceScreen implements Screen {
     Color bgColor;
     Spaceship spaceship;
     Meteor meteor;
-    ParticleEffect flame;
+    Flame flame;
 
     public SpaceScreen(MyGame game) {
         this.game = game;
@@ -26,9 +25,7 @@ public class SpaceScreen implements Screen {
         spaceship = new Spaceship();
         meteor = new Meteor();
 
-
-        flame = new ParticleEffect();
-        flame.load(Gdx.files.internal("flame.p"), Gdx.files.internal("."));
+        flame = new Flame(spaceship);
     }
 
     @Override
@@ -39,6 +36,9 @@ public class SpaceScreen implements Screen {
     @Override
     public void render(float v) {
         spaceship.update();
+
+        flame.update();
+
         camera.position.set(
             spaceship.x() + spaceship.width() / 2f,
             spaceship.y() + spaceship.height() / 2f,
@@ -50,9 +50,9 @@ public class SpaceScreen implements Screen {
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
+        flame.draw(game.batch);
         spaceship.draw(game.batch);
         meteor.draw(game.batch);
-        flame.draw(game.batch, Gdx.graphics.getDeltaTime());
         game.batch.end();
     }
 

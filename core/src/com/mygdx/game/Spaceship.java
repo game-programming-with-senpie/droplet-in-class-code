@@ -13,7 +13,7 @@ public class Spaceship {
     final float STEERING_FACTOR = 5;
 
     Vector2 pos;
-    float rot;
+    private float rot;
     Vector2 vel;
     TextureRegion texture;
 
@@ -86,5 +86,9 @@ public class Spaceship {
 
     public float width() {
         return texture.getRegionWidth();
+    }
+
+    public float angle() {
+        return rot;
     }
 }
