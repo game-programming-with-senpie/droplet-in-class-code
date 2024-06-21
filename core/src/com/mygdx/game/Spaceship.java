@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Spaceship {
-    final float MAX_SPEED = 500;
-    final float STEERING_FACTOR = 5;
+    public static final float MAX_SPEED = 500;
+    public static final float STEERING_FACTOR = 5;
 
     Vector2 pos;
     private float rot;

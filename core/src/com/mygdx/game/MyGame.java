@@ -3,9 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class MyGame extends Game {
 	SpriteBatch batch;
+	ShapeRenderer shapeRenderer;
 	BitmapFont font;
 	GameScreen gameScreen;
 	MainMenuScreen mainMenuScreen;
@@ -17,6 +19,7 @@ public class MyGame extends Game {
 		gameScreen = new GameScreen(this);
 		spaceScreen = new SpaceScreen(this);
 		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
 
 		setScreen(mainMenuScreen);
